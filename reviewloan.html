@@ -1,0 +1,45 @@
+<!-- reviewloans.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Loan Applications</title>
+  <style>
+    body { background: #0f2027; color: white; font-family: sans-serif; padding: 20px; }
+    table { width: 100%; border-collapse: collapse; background: #fff; color: #000; }
+    th, td { padding: 10px; border: 1px solid #ccc; text-align: left; }
+    th { background: #203a43; color: white; }
+  </style>
+</head>
+<body>
+  <h1>Loan Applications</h1>
+  <table id="loanTable">
+    <thead>
+      <tr>
+        <th>Loan Type</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Loan Amount</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const applications = JSON.parse(localStorage.getItem("loanApplications")) || [];
+    const tbody = document.querySelector("#loanTable tbody");
+
+    applications.forEach(app => {
+      const row = `<tr>
+        <td>${app.loanType}</td>
+        <td>${app.fullName}</td>
+        <td>${app.email}</td>
+        <td>${app.phone}</td>
+        <td>${app.loanAmount}</td>
+      </tr>`;
+      tbody.innerHTML += row;
+    });
+  </script>
+</body>
+</html>

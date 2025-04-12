@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Users | Loan Applications</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f7fa;
+      }
+
+      h1 {
+        text-align: center;
+        color: #2c3e50;
+      }
+
+      .applications-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      .applications-table th,
+      .applications-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+      }
+
+      .applications-table th {
+        background-color: #3498db;
+        color: white;
+      }
+
+      .applications-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      .applications-table tr:hover {
+        background-color: #f1f1f1;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Manage Users - Loan Applications</h1>
+    <table class="applications-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type of Loan</th>
+          <th>Loan Amount</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="applicationsTableBody">
+        <!-- Loan applications will be dynamically inserted here -->
+      </tbody>
+    </table>
+
+    <script>
+      function loadApplications() {
+        // Retrieve applications from localStorage
+        const applications =
+          JSON.parse(localStorage.getItem("loanApplications")) || [];
+
+        // Get the table body element
+        const tableBody = document.getElementById("applicationsTableBody");
+
+        // Clear existing rows
+        tableBody.innerHTML = "";
+
+        // Populate table with applications
+        applications.forEach((application) => {
+          const row = document.createElement("tr");
+
+          row.innerHTML = `
+            <td>${application.name}</td>
+            <td>${application.type}</td>
+            <td>₹${application.amount}</td>
+            <td>${application.date}</td>
+          `;
+
+          tableBody.appendChild(row);
+        });
+      }
+
+      // Load applications on page load
+      window.onload = loadApplications;
+    </script>
+  </body>
+</html>

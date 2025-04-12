@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Business Loan Application</title>
+    <style>
+      /* Reset and Base Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f7f9fc;
+        color: #333;
+        padding: 20px;
+        line-height: 1.6;
+      }
+
+      /* Form Container */
+      .loan-form {
+        max-width: 850px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        text-align: center;
+        color: #2e4a78;
+        margin-bottom: 30px;
+        font-size: 2.2rem;
+        font-weight: 600;
+      }
+
+      h2 {
+        color: #4b6cb7;
+        margin: 25px 0 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e0e6f0;
+        font-size: 1.5rem;
+      }
+
+      /* Form Controls */
+      input[type="text"],
+      input[type="date"],
+      input[type="tel"],
+      input[type="email"],
+      input[type="number"],
+      textarea {
+        width: 100%;
+        padding: 14px;
+        margin-bottom: 15px;
+        border: 1px solid #d9e2ec;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: #fcfdff;
+      }
+
+      input:focus,
+      textarea:focus {
+        border-color: #4b6cb7;
+        outline: none;
+        box-shadow: 0 0 8px rgba(75, 108, 183, 0.25);
+        background-color: #fff;
+      }
+
+      input::placeholder,
+      textarea::placeholder {
+        color: #8e9aaf;
+      }
+
+      /* File Upload Styling */
+      label {
+        display: block;
+        margin-bottom: 18px;
+        font-weight: 500;
+        color: #435778;
+      }
+
+      input[type="file"] {
+        margin-top: 8px;
+        padding: 10px 0;
+        width: 100%;
+        color: #555;
+      }
+
+      /* Submit Button */
+      button[type="submit"] {
+        display: block;
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 25px;
+        transition: all 0.3s ease;
+        letter-spacing: 0.5px;
+      }
+
+      button[type="submit"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(24, 40, 72, 0.3);
+      }
+
+      button[type="submit"]:active {
+        transform: translateY(0);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Business Loan Application Form</h1>
+    <form class="loan-form" onsubmit="submitApplication(event)">
+      <h2>Applicant Information</h2>
+      <input
+        type="text"
+        name="ownerName"
+        placeholder="Owner's Full Name"
+        required
+      />
+      <input type="date" name="dob" placeholder="Date of Birth" required />
+      <input type="text" name="pan" placeholder="PAN Number" required />
+      <input type="text" name="aadhaar" placeholder="Aadhaar Number" required />
+      <input type="tel" name="phone" placeholder="Phone Number" required />
+      <input type="email" name="email" placeholder="Email Address" required />
+
+      <h2>Business Information</h2>
+      <input
+        type="text"
+        name="businessName"
+        placeholder="Business Name"
+        required
+      />
+      <input
+        type="text"
+        name="businessType"
+        placeholder="Type of Business (e.g., Sole Proprietorship, Pvt Ltd)"
+        required
+      />
+      <input
+        type="text"
+        name="industry"
+        placeholder="Industry Sector"
+        required
+      />
+      <input
+        type="number"
+        name="annualRevenue"
+        placeholder="Annual Revenue (INR)"
+        required
+      />
+      <input
+        type="number"
+        name="yearsOperation"
+        placeholder="Years in Operation"
+        required
+      />
+      <textarea
+        name="businessAddress"
+        placeholder="Business Address"
+        rows="3"
+        required
+      ></textarea>
+
+      <h2>Loan Details</h2>
+      <input
+        type="number"
+        name="loanAmount"
+        placeholder="Loan Amount Required"
+        required
+      />
+      <input
+        type="number"
+        name="loanTenure"
+        placeholder="Loan Tenure (in years)"
+        required
+      />
+      <textarea
+        name="loanPurpose"
+        placeholder="Purpose of the Loan"
+        rows="4"
+        required
+      ></textarea>
+
+      <h2>Documents Upload</h2>
+      <label
+        >Business Registration Certificate:
+        <input
+          type="file"
+          name="registrationCert"
+          accept=".pdf,.jpg,.png"
+          required
+      /></label>
+      <label
+        >Owner's PAN Card:
+        <input type="file" name="ownerPan" accept=".pdf,.jpg,.png" required
+      /></label>
+      <label
+        >Aadhaar Card:
+        <input type="file" name="ownerAadhaar" accept=".pdf,.jpg,.png" required
+      /></label>
+      <label
+        >Last 2 Years ITR:
+        <input type="file" name="itrDocs" accept=".pdf,.jpg,.png" required
+      /></label>
+      <label
+        >Bank Statement (Last 6 months):
+        <input
+          type="file"
+          name="bankStatement"
+          accept=".pdf,.jpg,.png"
+          required
+      /></label>
+
+      <button type="submit">Submit Application</button>
+    </form>
+
+    <script>
+      function submitApplication(event) {
+        event.preventDefault(); // Prevent the default form submission
+        alert("Application submitted successfully!");
+      }
+    </script>
+  </body>
+</html>

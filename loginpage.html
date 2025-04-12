@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      }
+
+      .outer-container {
+        width: 360px;
+        padding: 20px;
+        border-radius: 12px;
+        border: 2px solid black;
+        box-shadow: 0 0 15px black;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      h1 {
+        font-size: 28px;
+        text-align: center;
+        color: #fff;
+        margin-bottom: 20px;
+      }
+
+      .input-box {
+        position: relative;
+        width: 100%;
+        height: 50px;
+        margin: 15px 0;
+      }
+
+      .input-box input {
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        border: 2px solid black;
+        outline: none;
+        border-radius: 45px;
+        font-size: 16px;
+        color: black;
+        padding: 20px 45px 20px 20px;
+      }
+
+      .input-box input::placeholder {
+        color: white;
+      }
+
+      .btn {
+        width: 100%;
+        height: 45px;
+        font-size: 16px;
+        font-weight: 600;
+        background-color: #0f2027;
+        border: none;
+        outline: none;
+        border-radius: 45px;
+        cursor: pointer;
+        margin-bottom: 20px;
+        color: white;
+        text-align: center;
+      }
+
+      .btn a {
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+      }
+
+      .login-type {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .login-type label {
+        margin-right: 10px;
+        font-size: 16px;
+        color: white;
+      }
+
+      .login-type input {
+        margin-right: 5px;
+      }
+
+      #neru {
+        text-align: center;
+        margin-top: 10px;
+      }
+
+      #neru a {
+        text-decoration: none;
+        color: crimson;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="outer-container">
+      <h1>Login</h1>
+
+      <!-- User Login Form -->
+      <form id="user-login-form" onsubmit="loginUser(event)">
+        <div class="input-box">
+          <input type="text" id="user-email" placeholder="Email" required />
+        </div>
+        <div class="input-box">
+          <input
+            type="password"
+            id="user-password"
+            placeholder="Password"
+            required
+          />
+        </div>
+        <button class="btn" type="submit">Login as User</button>
+      </form>
+
+      <!-- Admin Login Form -->
+      <form
+        id="admin-login-form"
+        style="display: none"
+        onsubmit="loginAdmin(event)"
+      >
+        <div class="input-box">
+          <input type="text" id="admin-email" placeholder="Email" required />
+        </div>
+        <div class="input-box">
+          <input
+            type="password"
+            id="admin-password"
+            placeholder="Password"
+            required
+          />
+        </div>
+        <button class="btn" type="submit">Login as Admin</button>
+      </form>
+
+      <p id="neru">
+        Don't have an account?
+        <a href="registerpage.html">Register</a>
+      </p>
+    </div>
+
+    <script>
+      function showUserLogin() {
+        document.getElementById("user-login-form").style.display = "block";
+        document.getElementById("admin-login-form").style.display = "none";
+      }
+
+      function showAdminLogin() {
+        document.getElementById("user-login-form").style.display = "none";
+        document.getElementById("admin-login-form").style.display = "block";
+      }
+
+      // Automatically show the correct login form based on the query parameter
+      window.onload = function () {
+        const params = new URLSearchParams(window.location.search);
+        const type = params.get("type");
+
+        if (type === "admin") {
+          showAdminLogin();
+        } else {
+          showUserLogin();
+        }
+      };
+
+      // Handle User Login
+      function loginUser(event) {
+        event.preventDefault();
+        const email = document.getElementById("user-email").value;
+        const password = document.getElementById("user-password").value;
+
+        const userData = JSON.parse(localStorage.getItem("userData"));
+
+        if (
+          userData &&
+          userData.email === email &&
+          userData.password === password
+        ) {
+          alert("Successfully logged in as User!");
+          window.location.href = "homepage.html"; // Redirect to homepage for users
+        } else {
+          alert("Invalid email or password. Please try again.");
+        }
+      }
+
+      // Handle Admin Login
+      function loginAdmin(event) {
+        event.preventDefault();
+        const email = document.getElementById("admin-email").value;
+        const password = document.getElementById("admin-password").value;
+
+        const adminData = JSON.parse(localStorage.getItem("adminData"));
+
+        if (
+          adminData &&
+          adminData.email === email &&
+          adminData.password === password
+        ) {
+          alert("Successfully logged in as Admin!");
+          window.location.href = "admin.html"; // Redirect to admin page
+        } else {
+          alert("Invalid email or password. Please try again.");
+        }
+      }
+    </script>
+  </body>
+</html>
