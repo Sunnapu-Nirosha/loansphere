@@ -82,19 +82,11 @@
         font-weight: bold;
       }
 
-      .login-type {
-        margin: 20px 0;
+      .error-message {
+        color: red;
+        font-size: 14px;
+        margin-top: 10px;
         text-align: center;
-      }
-
-      .login-type label {
-        margin-right: 10px;
-        font-size: 16px;
-        color: white;
-      }
-
-      .login-type input {
-        margin-right: 5px;
       }
 
       #neru {
@@ -116,16 +108,24 @@
       <!-- User Login Form -->
       <form id="user-login-form" onsubmit="loginUser(event)">
         <div class="input-box">
-          <input type="text" id="user-email" placeholder="Email" required />
+          <input
+            type="text"
+            id="user-email"
+            placeholder="Email"
+            aria-label="User Email"
+            required
+          />
         </div>
         <div class="input-box">
           <input
             type="password"
             id="user-password"
             placeholder="Password"
+            aria-label="User Password"
             required
           />
         </div>
+        <div id="user-error" class="error-message"></div>
         <button class="btn" type="submit">Login as User</button>
       </form>
 
@@ -136,22 +136,30 @@
         onsubmit="loginAdmin(event)"
       >
         <div class="input-box">
-          <input type="text" id="admin-email" placeholder="Email" required />
+          <input
+            type="text"
+            id="admin-email"
+            placeholder="Email"
+            aria-label="Admin Email"
+            required
+          />
         </div>
         <div class="input-box">
           <input
             type="password"
             id="admin-password"
             placeholder="Password"
+            aria-label="Admin Password"
             required
           />
         </div>
+        <div id="admin-error" class="error-message"></div>
         <button class="btn" type="submit">Login as Admin</button>
       </form>
 
       <p id="neru">
         Don't have an account?
-        <a href="registerpage.html">Register</a>
+        <a href="./registerpage.html">Register</a>
       </p>
     </div>
 
@@ -184,17 +192,27 @@
         const email = document.getElementById("user-email").value;
         const password = document.getElementById("user-password").value;
 
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          document.getElementById("user-error").innerText =
+            "Please enter a valid email address.";
+          return;
+        }
+
         const userData = JSON.parse(localStorage.getItem("userData"));
 
-        if (
-          userData &&
-          userData.email === email &&
-          userData.password === password
-        ) {
+        if (!userData) {
+          document.getElementById("user-error").innerText =
+            "No user data found. Please register first.";
+          return;
+        }
+
+        if (userData.email === email && userData.password === password) {
           alert("Successfully logged in as User!");
-          window.location.href = "homepage.html"; // Redirect to homepage for users
+          window.location.href = "./homepage.html"; // Redirect to homepage for users
         } else {
-          alert("Invalid email or password. Please try again.");
+          document.getElementById("user-error").innerText =
+            "Invalid email or password. Please try again.";
         }
       }
 
@@ -204,17 +222,27 @@
         const email = document.getElementById("admin-email").value;
         const password = document.getElementById("admin-password").value;
 
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          document.getElementById("admin-error").innerText =
+            "Please enter a valid email address.";
+          return;
+        }
+
         const adminData = JSON.parse(localStorage.getItem("adminData"));
 
-        if (
-          adminData &&
-          adminData.email === email &&
-          adminData.password === password
-        ) {
+        if (!adminData) {
+          document.getElementById("admin-error").innerText =
+            "No admin data found. Please contact support.";
+          return;
+        }
+
+        if (adminData.email === email && adminData.password === password) {
           alert("Successfully logged in as Admin!");
-          window.location.href = "admin.html"; // Redirect to admin page
+          window.location.href = "./admin.html"; // Redirect to admin page
         } else {
-          alert("Invalid email or password. Please try again.");
+          document.getElementById("admin-error").innerText =
+            "Invalid email or password. Please try again.";
         }
       }
     </script>

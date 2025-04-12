@@ -4,7 +4,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #f4f4f9;
-  color: orange;
+  color: #333; /* Improved contrast */
 }
 
 h1 {
@@ -66,6 +66,47 @@ h2 {
 
 .loan-form button:hover {
   background-color: #2980b9;
+}
+
+/* Hover and Focus Effects for Input Fields */
+.loan-form input:hover,
+.loan-form textarea:hover {
+  border-color: #3498db;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+.loan-form input:focus,
+.loan-form textarea:focus {
+  border-color: #2980b9;
+  outline: none;
+  box-shadow: 0 0 5px rgba(41, 128, 185, 0.5);
+}
+
+/* Disabled Button State */
+.loan-form button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+/* Accessibility: Focus Visible */
+.loan-form input:focus-visible,
+.loan-form textarea:focus-visible,
+.loan-form button:focus-visible {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+}
+
+/* Success and Error Messages */
+.success-message {
+  color: #27ae60;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 14px;
+  margin-top: 10px;
 }
 
 /* Responsive Design */

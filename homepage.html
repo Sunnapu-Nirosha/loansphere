@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,13 +12,12 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     />
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <style>
       body {
         font-family: Arial, sans-serif;
         margin: 0;
-        padding-top: 100px; /* Offset for fixed header */
+        padding-top: 100px;
         background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
         height: 100%;
         overflow-x: hidden;
@@ -25,7 +25,6 @@
         line-height: 1.6;
       }
 
-      /* Fixed Header */
       header {
         background-color: #0f2027;
         color: white;
@@ -36,6 +35,7 @@
         z-index: 999;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
       }
+
       .container {
         width: 90%;
         display: flex;
@@ -45,7 +45,6 @@
         margin: auto;
       }
 
-      /* Logo and Heading */
       .logo-heading {
         display: flex;
         align-items: center;
@@ -58,7 +57,6 @@
         margin-right: 10px;
       }
 
-      /* Navigation */
       nav ul {
         list-style: none;
         padding: 0;
@@ -80,48 +78,6 @@
         color: #3498db;
       }
 
-      .carousel-inner img {
-        height: 550px;
-        object-fit: cover;
-      }
-
-      .conta {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 30px;
-        max-width: 1200px;
-        margin: 0 auto 60px auto; /* top 0, sides auto, bottom 60px */
-        padding: 0 20px;
-      }
-
-      .box {
-        background: white;
-        width: 200px;
-        height: 200px;
-        border-radius: 20px;
-        padding: 25px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        transition: transform 0.2s ease;
-      }
-
-      .box:hover {
-        transform: scale(1.03);
-      }
-
-      .loan-title {
-        display: inline-block;
-        font-size: 18px;
-        color: black;
-        font-weight: bold;
-        margin-top: 10px;
-        text-decoration: none;
-      }
-
-      .loan-title:hover {
-        text-decoration: underline;
-      }
-
       .emi-calculator {
         max-width: 700px;
         padding: 40px;
@@ -129,6 +85,12 @@
         border-radius: 12px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         margin: 40px auto;
+      }
+
+      .error-message {
+        color: red;
+        font-size: 14px;
+        margin-top: 10px;
       }
 
       footer {
@@ -176,7 +138,7 @@
     <header>
       <div class="container">
         <div class="logo-heading">
-          <img src="logoo.jpg" alt="Logo" />
+          <img src="logoo.jpg" alt="Loan Sphere Logo" />
           <h3 style="font-weight: bold; margin-top: 30px">LOAN SPHERE</h3>
         </div>
         <nav>
@@ -219,6 +181,7 @@
               class="form-control"
               id="loanAmount"
               placeholder="Enter loan amount"
+              aria-label="Loan Amount"
             />
           </div>
           <div class="mb-3">
@@ -230,6 +193,7 @@
               class="form-control"
               id="interestRate"
               placeholder="Enter interest rate"
+              aria-label="Interest Rate"
             />
           </div>
           <div class="mb-3">
@@ -241,6 +205,7 @@
               class="form-control"
               id="loanTenure"
               placeholder="Enter loan tenure"
+              aria-label="Loan Tenure"
             />
           </div>
           <button
@@ -266,8 +231,16 @@
         const months = years * 12;
 
         if (isNaN(principal) || isNaN(interest) || isNaN(months)) {
+          document.getElementById("emiResult").className = "error-message";
           document.getElementById("emiResult").innerText =
             "Please fill all fields correctly.";
+          return;
+        }
+
+        if (principal <= 0 || interest <= 0 || years <= 0) {
+          document.getElementById("emiResult").className = "error-message";
+          document.getElementById("emiResult").innerText =
+            "Please enter positive values for all fields.";
           return;
         }
 
@@ -276,6 +249,7 @@
           (Math.pow(1 + interest, months) - 1);
         const emiRounded = emi.toFixed(2);
 
+        document.getElementById("emiResult").className = "";
         document.getElementById(
           "emiResult"
         ).innerText = `Your EMI is ₹${emiRounded}/month`;
@@ -294,11 +268,10 @@
         <div class="footer-column">
           <h4>Quick Links</h4>
           <ul class="footer-links">
-            <li><a href="homepage.html">Home</a></li>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Calculator</a></li>
-            <li><a href="#">Contact</a></li>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#emi">Calculator</a></li>
+            <li><a href="#contact">Contact</a></li>
           </ul>
         </div>
       </div>

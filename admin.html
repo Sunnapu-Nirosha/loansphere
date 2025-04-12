@@ -216,37 +216,37 @@
         </div>
         <ul class="nav-links">
           <li>
-            <a href="dashboard.html" class="active">
+            <a href="./dashboard.html" class="active">
               <i class="fas fa-home"></i>
               <span class="nav-text">Dashboard</span>
             </a>
           </li>
           <li>
-            <a href="manageusers.html">
+            <a href="./manageusers.html">
               <i class="fas fa-users"></i>
               <span class="nav-text">Manage Users</span>
             </a>
           </li>
           <li>
-            <a href="reviewloan.html">
+            <a href="./reviewloans.html">
               <i class="fas fa-hand-holding-usd"></i>
               <span class="nav-text">Loan Applications</span>
             </a>
           </li>
           <li>
-            <a href="viewreports.html">
+            <a href="./viewreports.html">
               <i class="fas fa-chart-line"></i>
               <span class="nav-text">View Reports</span>
             </a>
           </li>
           <li>
-            <a href="systemsettings.html">
+            <a href="./systemsettings.html">
               <i class="fas fa-cogs"></i>
               <span class="nav-text">System Settings</span>
             </a>
           </li>
           <li>
-            <a href="templete.html">
+            <a href="./templete.html">
               <i class="fas fa-sign-out-alt"></i>
               <span class="nav-text">Logout</span>
             </a>
@@ -260,22 +260,23 @@
             <div class="card">
               <i class="fas fa-users"></i>
               <h3>Manage Users</h3>
-              <a href="manageusers.html" class="btn">View Users</a>
+              <a href="./manageusers.html" class="btn">View Users</a>
             </div>
             <div class="card">
               <i class="fas fa-hand-holding-usd"></i>
               <h3>Loan Applications</h3>
-              <a href="reviewloan.html" class="btn">Review Loans</a>
+              <p class="loan-count">0</p>
+              <a href="./reviewloans.html" class="btn">Review Loans</a>
             </div>
             <div class="card">
               <i class="fas fa-chart-line"></i>
               <h3>Analytics & Reports</h3>
-              <a href="viewreports.html" class="btn">View Reports</a>
+              <a href="./viewreports.html" class="btn">View Reports</a>
             </div>
             <div class="card">
               <i class="fas fa-cogs"></i>
               <h3>System Settings</h3>
-              <a href="systemsettings.html" class="btn">Settings</a>
+              <a href="./systemsettings.html" class="btn">Settings</a>
             </div>
           </div>
         </div>
@@ -284,11 +285,9 @@
 
     <footer>&copy; 2025 Loan Sphere Admin Panel. All rights reserved.</footer>
 
-    <!-- Add this script section before the closing </body> tag -->
     <script>
       // Function to load loan applications
       async function loadLoanApplications() {
-        // Get all types of loan applications from localStorage
         const personalLoans =
           JSON.parse(localStorage.getItem("loanApplications")) || [];
         const homeLoans =
@@ -302,7 +301,6 @@
         const mortgageLoans =
           JSON.parse(localStorage.getItem("mortgageLoanApplications")) || [];
 
-        // Combine all loan applications with their type
         const allApplications = [
           ...personalLoans.map((loan) => ({ ...loan, type: "Personal Loan" })),
           ...homeLoans.map((loan) => ({ ...loan, type: "Home Loan" })),
@@ -310,19 +308,16 @@
           ...carLoans.map((loan) => ({ ...loan, type: "Car Loan" })),
           ...goldLoans.map((loan) => ({ ...loan, type: "Gold Loan" })),
           ...mortgageLoans.map((loan) => ({ ...loan, type: "Mortgage Loan" })),
-        ];
+        ].filter((loan) => loan);
 
-        // Update the loan applications count in the dashboard
         const loanCountElement = document.querySelector(".loan-count");
         if (loanCountElement) {
           loanCountElement.textContent = allApplications.length;
         }
 
-        // Add click event to the loan applications link
         document
-          .querySelector('a[href="reviewloans.html"]')
-          .addEventListener("click", function (e) {
-            // Store the applications data for the review page
+          .querySelector('a[href="./reviewloans.html"]')
+          ?.addEventListener("click", function () {
             localStorage.setItem(
               "pendingReviews",
               JSON.stringify(allApplications)
@@ -330,31 +325,29 @@
           });
       }
 
-      // Add notification badge for pending applications
       function addNotificationBadge() {
-        const loanLink = document.querySelector('a[href="reviewloans.html"]');
-        const badge = document.createElement("span");
-        badge.style.cssText = `
-        background-color: #ff4444;
-        color: white;
-        padding: 2px 6px;
-        border-radius: 10px;
-        font-size: 0.8rem;
-        margin-left: 8px;
-      `;
+        const loanLink = document.querySelector('a[href="./reviewloans.html"]');
+        if (loanLink) {
+          const badge = document.createElement("span");
+          badge.style.cssText = `
+            background-color: #ff4444;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin-left: 8px;
+          `;
 
-        // Count pending applications
-        const pendingCount =
-          JSON.parse(localStorage.getItem("pendingReviews"))?.length || 0;
-        badge.textContent = pendingCount;
+          const pendingCount =
+            JSON.parse(localStorage.getItem("pendingReviews"))?.length || 0;
+          badge.textContent = pendingCount;
 
-        // Only show badge if there are pending applications
-        if (pendingCount > 0) {
-          loanLink.appendChild(badge);
+          if (pendingCount > 0) {
+            loanLink.appendChild(badge);
+          }
         }
       }
 
-      // Initialize when page loads
       document.addEventListener("DOMContentLoaded", () => {
         loadLoanApplications();
         addNotificationBadge();

@@ -10,7 +10,7 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: sans-serif;
+        font-family: Arial, sans-serif;
       }
 
       body {
@@ -19,14 +19,14 @@
         align-items: center;
         justify-content: center;
         background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+        color: white;
       }
 
       .outer-container {
         width: 360px;
         padding: 20px;
         border-radius: 12px;
-        border: 2px solid black;
-        box-shadow: 0 0 15px black;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
         background: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(10px);
       }
@@ -34,27 +34,23 @@
       h1 {
         font-size: 28px;
         text-align: center;
-        color: #fff;
         margin-bottom: 20px;
       }
 
       .input-box {
         position: relative;
         width: 100%;
-        height: 50px;
-        margin: 15px 0;
+        margin-bottom: 15px;
       }
 
       .input-box input {
         width: 100%;
-        height: 100%;
+        padding: 10px;
         background: transparent;
-        border: 2px solid black;
-        outline: none;
-        border-radius: 45px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
         font-size: 16px;
         color: black;
-        padding: 20px 45px 20px 20px;
       }
 
       .input-box input::placeholder {
@@ -63,23 +59,19 @@
 
       .btn {
         width: 100%;
-        height: 45px;
+        padding: 10px;
         font-size: 16px;
         font-weight: 600;
-        background-color: #0f2027;
+        background-color: #3498db;
         border: none;
-        outline: none;
-        border-radius: 45px;
+        border-radius: 5px;
         cursor: pointer;
-        margin-bottom: 20px;
         color: white;
         text-align: center;
       }
 
-      .btn a {
-        text-decoration: none;
-        color: white;
-        font-weight: bold;
+      .btn:hover {
+        background-color: #2980b9;
       }
 
       .login-type {
@@ -90,22 +82,17 @@
       .login-type label {
         margin-right: 10px;
         font-size: 16px;
-        color: white;
       }
 
       .login-type input {
         margin-right: 5px;
       }
 
-      #neru {
-        text-align: center;
-        margin-top: 10px;
-      }
-
-      #neru a {
-        text-decoration: none;
-        color: crimson;
-        font-weight: bold;
+      .error-message {
+        color: red;
+        font-size: 14px;
+        margin-top: -10px;
+        margin-bottom: 10px;
       }
     </style>
   </head>
@@ -139,16 +126,29 @@
       <!-- User Registration Form -->
       <form id="user-form" onsubmit="registerUser(event)">
         <div class="input-box">
-          <input type="text" id="user-name" placeholder="Full Name" required />
+          <input
+            type="text"
+            id="user-name"
+            placeholder="Full Name"
+            aria-label="Full Name"
+            required
+          />
         </div>
         <div class="input-box">
-          <input type="email" id="user-email" placeholder="Email" required />
+          <input
+            type="email"
+            id="user-email"
+            placeholder="Email"
+            aria-label="Email"
+            required
+          />
         </div>
         <div class="input-box">
           <input
             type="password"
             id="user-password"
             placeholder="Password"
+            aria-label="Password"
             required
           />
         </div>
@@ -157,9 +157,11 @@
             type="text"
             id="user-phone"
             placeholder="Phone Number"
+            aria-label="Phone Number"
             required
           />
         </div>
+        <div id="user-error" class="error-message"></div>
         <button class="btn" type="submit">Register as User</button>
       </form>
 
@@ -170,29 +172,44 @@
         onsubmit="registerAdmin(event)"
       >
         <div class="input-box">
-          <input type="text" id="admin-name" placeholder="Full Name" required />
+          <input
+            type="text"
+            id="admin-name"
+            placeholder="Full Name"
+            aria-label="Full Name"
+            required
+          />
         </div>
         <div class="input-box">
-          <input type="email" id="admin-email" placeholder="Email" required />
+          <input
+            type="email"
+            id="admin-email"
+            placeholder="Email"
+            aria-label="Email"
+            required
+          />
         </div>
         <div class="input-box">
           <input
             type="password"
             id="admin-password"
             placeholder="Password"
+            aria-label="Password"
             required
           />
         </div>
         <div class="input-box">
-          <input type="text" id="admin-id" placeholder="Admin ID" required />
+          <input
+            type="text"
+            id="admin-id"
+            placeholder="Admin ID"
+            aria-label="Admin ID"
+            required
+          />
         </div>
+        <div id="admin-error" class="error-message"></div>
         <button class="btn" type="submit">Register as Admin</button>
       </form>
-
-      <p id="neru">
-        Already have an account?
-        <a href="loginpage.html">Login</a>
-      </p>
     </div>
 
     <script>
@@ -214,12 +231,41 @@
           password: document.getElementById("user-password").value,
           phone: document.getElementById("user-phone").value,
         };
-        localStorage.setItem("userData", JSON.stringify(userData));
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const phoneRegex = /^\d{10}$/;
+
+        if (!emailRegex.test(userData.email)) {
+          alert("Please enter a valid email address.");
+          return;
+        }
+
+        if (!phoneRegex.test(userData.phone)) {
+          alert("Please enter a valid 10-digit phone number.");
+          return;
+        }
+
+        if (userData.password.length < 8) {
+          alert("Password must be at least 8 characters long.");
+          return;
+        }
+
+        const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+        const isDuplicate = existingUsers.some(
+          (user) => user.email === userData.email
+        );
+
+        if (isDuplicate) {
+          alert("This email is already registered.");
+          return;
+        }
+
+        existingUsers.push(userData);
+        localStorage.setItem("users", JSON.stringify(existingUsers));
         alert("Successfully registered as User!");
-        window.location.href = "loginpage.html?type=user";
+        window.location.href = "./loginpage.html?type=user";
       }
 
-      // Function to handle admin registration
       function registerAdmin(event) {
         event.preventDefault();
         const adminData = {
@@ -228,9 +274,33 @@
           password: document.getElementById("admin-password").value,
           adminId: document.getElementById("admin-id").value,
         };
-        localStorage.setItem("adminData", JSON.stringify(adminData));
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(adminData.email)) {
+          alert("Please enter a valid email address.");
+          return;
+        }
+
+        if (adminData.password.length < 8) {
+          alert("Password must be at least 8 characters long.");
+          return;
+        }
+
+        const existingAdmins = JSON.parse(localStorage.getItem("admins")) || [];
+        const isDuplicate = existingAdmins.some(
+          (admin) => admin.email === adminData.email
+        );
+
+        if (isDuplicate) {
+          alert("This email is already registered.");
+          return;
+        }
+
+        existingAdmins.push(adminData);
+        localStorage.setItem("admins", JSON.stringify(existingAdmins));
         alert("Successfully registered as Admin!");
-        window.location.href = "loginpage.html?type=admin";
+        window.location.href = "./loginpage.html?type=admin";
       }
     </script>
   </body>

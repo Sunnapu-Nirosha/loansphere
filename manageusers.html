@@ -42,17 +42,24 @@
       .applications-table tr:hover {
         background-color: #f1f1f1;
       }
+
+      .empty-message {
+        text-align: center;
+        color: #888;
+        font-size: 16px;
+        margin-top: 20px;
+      }
     </style>
   </head>
   <body>
     <h1>Manage Users - Loan Applications</h1>
-    <table class="applications-table">
+    <table class="applications-table" aria-label="Loan Applications Table">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Type of Loan</th>
-          <th>Loan Amount</th>
-          <th>Date</th>
+          <th scope="col">Name</th>
+          <th scope="col">Type of Loan</th>
+          <th scope="col">Loan Amount</th>
+          <th scope="col">Date</th>
         </tr>
       </thead>
       <tbody id="applicationsTableBody">
@@ -72,15 +79,54 @@
         // Clear existing rows
         tableBody.innerHTML = "";
 
+        // Validate data structure
+        if (
+          !Array.isArray(applications) ||
+          !applications.every(
+            (app) => app.name && app.type && app.amount && app.date
+          )
+        ) {
+          console.error("Invalid data structure in localStorage.");
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="4" style="text-align: center; color: #888;">
+                Invalid data found. Please check the data source.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        // Handle empty state
+        if (applications.length === 0) {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="4" style="text-align: center; color: #888;">
+                No loan applications found.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
         // Populate table with applications
         applications.forEach((application) => {
           const row = document.createElement("tr");
+
+          const formattedDate = new Date(application.date).toLocaleDateString(
+            "en-IN",
+            {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            }
+          );
 
           row.innerHTML = `
             <td>${application.name}</td>
             <td>${application.type}</td>
             <td>₹${application.amount}</td>
-            <td>${application.date}</td>
+            <td>${formattedDate}</td>
           `;
 
           tableBody.appendChild(row);

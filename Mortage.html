@@ -198,16 +198,53 @@
     <h1>Mortgage Loan Application Form</h1>
     <form class="loan-form" onsubmit="submitApplication(event)">
       <h2>Applicant Details</h2>
-      <input type="text" name="fullName" placeholder="Full Name" required />
-      <input type="date" name="dob" placeholder="Date of Birth" required />
-      <input type="text" name="pan" placeholder="PAN Number" required />
-      <input type="text" name="aadhaar" placeholder="Aadhaar Number" required />
-      <input type="tel" name="phone" placeholder="Phone Number" required />
-      <input type="email" name="email" placeholder="Email Address" required />
+      <input
+        type="text"
+        name="fullName"
+        placeholder="Full Name"
+        aria-label="Full Name"
+        required
+      />
+      <input
+        type="date"
+        name="dob"
+        placeholder="Date of Birth"
+        aria-label="Date of Birth"
+        required
+      />
+      <input
+        type="text"
+        name="pan"
+        placeholder="PAN Number"
+        aria-label="PAN Number"
+        required
+      />
+      <input
+        type="text"
+        name="aadhaar"
+        placeholder="Aadhaar Number"
+        aria-label="Aadhaar Number"
+        required
+      />
+      <input
+        type="tel"
+        name="phone"
+        placeholder="Phone Number"
+        aria-label="Phone Number"
+        required
+      />
+      <input
+        type="email"
+        name="email"
+        placeholder="Email Address"
+        aria-label="Email Address"
+        required
+      />
       <input
         type="text"
         name="address"
         placeholder="Residential Address"
+        aria-label="Residential Address"
         required
       />
 
@@ -216,18 +253,21 @@
         type="text"
         name="employmentType"
         placeholder="Employment Type (Salaried/Self-employed)"
+        aria-label="Employment Type"
         required
       />
       <input
         type="text"
         name="employer"
         placeholder="Employer / Business Name"
+        aria-label="Employer / Business Name"
         required
       />
       <input
         type="number"
         name="monthlyIncome"
         placeholder="Monthly Income (INR)"
+        aria-label="Monthly Income"
         required
       />
 
@@ -236,18 +276,21 @@
         type="text"
         name="propertyAddress"
         placeholder="Property Address"
+        aria-label="Property Address"
         required
       />
       <input
         type="number"
         name="propertyValue"
         placeholder="Estimated Property Value (INR)"
+        aria-label="Estimated Property Value"
         required
       />
       <input
         type="text"
         name="ownershipType"
         placeholder="Ownership Type (Self/Joint)"
+        aria-label="Ownership Type"
         required
       />
 
@@ -256,50 +299,113 @@
         type="number"
         name="loanAmount"
         placeholder="Loan Amount Required"
+        aria-label="Loan Amount Required"
         required
       />
       <input
         type="number"
         name="loanTenure"
         placeholder="Loan Tenure (in months)"
+        aria-label="Loan Tenure"
         required
       />
       <textarea
         name="loanPurpose"
         placeholder="Purpose of the Loan"
         rows="3"
+        aria-label="Purpose of the Loan"
         required
       ></textarea>
 
       <h2>Document Upload</h2>
-      <label
-        >PAN Card:
-        <input type="file" name="panUpload" accept=".pdf,.jpg,.png" required
-      /></label>
-      <label
-        >Aadhaar Card:
+      <label>
+        PAN Card:
+        <input type="file" name="panUpload" accept=".pdf,.jpg,.png" required />
+      </label>
+      <label>
+        Aadhaar Card:
         <input
           type="file"
           name="aadhaarUpload"
           accept=".pdf,.jpg,.png"
           required
-      /></label>
-      <label
-        >Income Proof:
-        <input type="file" name="incomeProof" accept=".pdf,.jpg,.png" required
-      /></label>
-      <label
-        >Property Documents:
-        <input type="file" name="propertyDocs" accept=".pdf,.jpg,.png" required
-      /></label>
+        />
+      </label>
+      <label>
+        Income Proof:
+        <input
+          type="file"
+          name="incomeProof"
+          accept=".pdf,.jpg,.png"
+          required
+        />
+      </label>
+      <label>
+        Property Documents:
+        <input
+          type="file"
+          name="propertyDocs"
+          accept=".pdf,.jpg,.png"
+          required
+        />
+      </label>
 
       <button type="submit">Submit Application</button>
     </form>
 
     <script>
+      function validateFiles(files) {
+        const maxFileSize = 2 * 1024 * 1024; // 2MB
+        for (const file of files) {
+          if (file.size > maxFileSize) {
+            alert(`File ${file.name} exceeds the 2MB size limit.`);
+            return false;
+          }
+          if (
+            !["image/jpeg", "image/png", "application/pdf"].includes(file.type)
+          ) {
+            alert(`File ${file.name} is not a valid type.`);
+            return false;
+          }
+        }
+        return true;
+      }
+
       function submitApplication(event) {
-        event.preventDefault(); // Prevent the default form submission
+        event.preventDefault();
+
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData.entries());
+
+        // Validate file uploads
+        const files = [
+          ...formData.getAll("panUpload"),
+          ...formData.getAll("aadhaarUpload"),
+          ...formData.getAll("incomeProof"),
+          ...formData.getAll("propertyDocs"),
+        ];
+        if (!validateFiles(files)) return;
+
+        const applications =
+          JSON.parse(localStorage.getItem("mortgageApplications")) || [];
+        const isDuplicate = applications.some(
+          (app) =>
+            app.fullName === data.fullName &&
+            app.propertyAddress === data.propertyAddress
+        );
+        if (isDuplicate) {
+          alert("This application already exists.");
+          return;
+        }
+
+        applications.push(data);
+        localStorage.setItem(
+          "mortgageApplications",
+          JSON.stringify(applications)
+        );
+
         alert("Application submitted successfully!");
+        event.target.reset();
       }
     </script>
   </body>

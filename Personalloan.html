@@ -114,6 +114,13 @@
         color: red;
       }
 
+      .error-message {
+        color: red;
+        font-size: 14px;
+        margin-top: -10px;
+        margin-bottom: 10px;
+      }
+
       /* Responsive styles */
       @media (max-width: 768px) {
         .loan-form {
@@ -171,10 +178,12 @@
         <div class="form-group">
           <label class="required" for="pan">PAN Number</label>
           <input type="text" id="pan" name="pan" required />
+          <div id="pan-error" class="error-message"></div>
         </div>
         <div class="form-group">
           <label class="required" for="aadhaar">Aadhaar Number</label>
           <input type="text" id="aadhaar" name="aadhaar" required />
+          <div id="aadhaar-error" class="error-message"></div>
         </div>
       </div>
 
@@ -343,6 +352,15 @@
           let applications =
             JSON.parse(localStorage.getItem("loanApplications")) || [];
 
+          // Check for duplicate applications
+          const isDuplicate = applications.some(
+            (app) => app.pan === data.pan && app.aadhaar === data.aadhaar
+          );
+          if (isDuplicate) {
+            alert("This application already exists.");
+            return;
+          }
+
           // Add new application
           applications.push(data);
 
@@ -362,10 +380,13 @@
 
       // Add form validation for PAN and Aadhaar
       document.getElementById("pan").addEventListener("input", function (e) {
+        const errorElement = document.getElementById("pan-error");
         this.value = this.value.toUpperCase();
         if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(this.value)) {
+          errorElement.innerText = "Please enter a valid PAN number.";
           this.setCustomValidity("Please enter a valid PAN number");
         } else {
+          errorElement.innerText = "";
           this.setCustomValidity("");
         }
       });
@@ -373,11 +394,15 @@
       document
         .getElementById("aadhaar")
         .addEventListener("input", function (e) {
+          const errorElement = document.getElementById("aadhaar-error");
           if (!/^\d{12}$/.test(this.value)) {
+            errorElement.innerText =
+              "Please enter a valid 12-digit Aadhaar number.";
             this.setCustomValidity(
               "Please enter a valid 12-digit Aadhaar number"
             );
           } else {
+            errorElement.innerText = "";
             this.setCustomValidity("");
           }
         });

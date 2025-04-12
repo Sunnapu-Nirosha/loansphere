@@ -4,215 +4,157 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gold Loan Application</title>
-    <style>
-      /* Reset and Base Styles */
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      }
-
-      body {
-        background-color: #f9f7f2;
-        color: #333;
-        padding: 20px;
-        line-height: 1.6;
-      }
-
-      /* Form Container */
-      .loan-form {
-        max-width: 800px;
-        margin: 0 auto 40px;
-        background: #fff;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(184, 134, 11, 0.15);
-        border: 1px solid rgba(218, 165, 32, 0.2);
-      }
-
-      h1 {
-        text-align: center;
-        color: #8b6914;
-        margin: 20px 0 30px;
-        font-size: 2.2rem;
-        font-weight: 600;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-      }
-
-      h2 {
-        color: #9b7d2d;
-        margin: 25px 0 15px;
-        padding-bottom: 8px;
-        border-bottom: 2px solid #f0e6ca;
-        font-size: 1.4rem;
-      }
-
-      /* Form Controls */
-      input[type="text"],
-      input[type="date"],
-      input[type="tel"],
-      input[type="email"],
-      input[type="number"],
-      textarea {
-        width: 100%;
-        padding: 14px;
-        margin-bottom: 16px;
-        border: 1px solid #e6d9b8;
-        border-radius: 8px;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        background-color: #fffdf9;
-      }
-
-      input:focus,
-      textarea:focus {
-        border-color: #d4af37;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(218, 165, 32, 0.15);
-        background-color: #fff;
-      }
-
-      input::placeholder,
-      textarea::placeholder {
-        color: #b0a383;
-      }
-
-      /* File Upload Styling */
-      label {
-        display: block;
-        margin-bottom: 16px;
-        font-weight: 500;
-        color: #6e5c30;
-      }
-
-      input[type="file"] {
-        margin-top: 8px;
-        padding: 8px 0;
-        width: 100%;
-        color: #6e5c30;
-      }
-
-      /* Submit Button */
-      button[type="submit"] {
-        display: block;
-        width: 100%;
-        padding: 16px;
-        background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        cursor: pointer;
-        margin-top: 25px;
-        transition: all 0.3s ease;
-        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
-      }
-
-      button[type="submit"]:hover {
-        background: linear-gradient(135deg, #b8860b 0%, #9b7d2d 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(184, 134, 11, 0.3);
-      }
-
-      button[type="submit"]:active {
-        transform: translateY(0);
-      }
-    </style>
+    <link rel="stylesheet" href="./goldloan.css" />
   </head>
   <body>
     <h1>Gold Loan Application Form</h1>
     <form class="loan-form" onsubmit="submitApplication(event)">
       <h2>Personal Information</h2>
-      <input type="text" name="fullName" placeholder="Full Name" required />
-      <input type="date" name="dob" placeholder="Date of Birth" required />
-      <input type="text" name="pan" placeholder="PAN Number" required />
-      <input type="text" name="aadhaar" placeholder="Aadhaar Number" required />
-      <input type="tel" name="phone" placeholder="Phone Number" required />
-      <input type="email" name="email" placeholder="Email Address" required />
-      <input
-        type="text"
-        name="address"
-        placeholder="Residential Address"
-        required
-      />
+      <label for="fullName">Full Name</label>
+      <input type="text" id="fullName" name="fullName" required />
+
+      <label for="dob">Date of Birth</label>
+      <input type="date" id="dob" name="dob" required />
+
+      <label for="pan">PAN Number</label>
+      <input type="text" id="pan" name="pan" required />
+
+      <label for="aadhaar">Aadhaar Number</label>
+      <input type="text" id="aadhaar" name="aadhaar" required />
+
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" name="phone" required />
+
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" required />
+
+      <label for="address">Residential Address</label>
+      <input type="text" id="address" name="address" required />
 
       <h2>Gold Details</h2>
-      <input
-        type="text"
-        name="goldType"
-        placeholder="Type of Gold (e.g., Jewelry, Coins)"
-        required
-      />
-      <input
-        type="number"
-        name="goldWeight"
-        placeholder="Weight (in grams)"
-        required
-      />
-      <input
-        type="number"
-        name="goldValue"
-        placeholder="Estimated Value (INR)"
-        required
-      />
+      <label for="goldType">Type of Gold (e.g., Jewelry, Coins)</label>
+      <input type="text" id="goldType" name="goldType" required />
+
+      <label for="goldWeight">Weight (in grams)</label>
+      <input type="number" id="goldWeight" name="goldWeight" required />
+
+      <label for="goldValue">Estimated Value (INR)</label>
+      <input type="number" id="goldValue" name="goldValue" required />
+
+      <label for="goldDescription">Description of Gold Items</label>
       <textarea
+        id="goldDescription"
         name="goldDescription"
-        placeholder="Description of Gold Items"
         rows="3"
         required
       ></textarea>
 
       <h2>Loan Details</h2>
-      <input
-        type="number"
-        name="loanAmount"
-        placeholder="Loan Amount Required"
-        required
-      />
-      <input
-        type="number"
-        name="loanTenure"
-        placeholder="Loan Tenure (in months)"
-        required
-      />
+      <label for="loanAmount">Loan Amount Required</label>
+      <input type="number" id="loanAmount" name="loanAmount" required />
+
+      <label for="loanTenure">Loan Tenure (in months)</label>
+      <input type="number" id="loanTenure" name="loanTenure" required />
+
+      <label for="loanPurpose">Purpose of the Loan</label>
       <textarea
+        id="loanPurpose"
         name="loanPurpose"
-        placeholder="Purpose of the Loan"
         rows="3"
         required
       ></textarea>
 
       <h2>Documents Upload</h2>
-      <label
-        >PAN Card:
-        <input type="file" name="panUpload" accept=".pdf,.jpg,.png" required
-      /></label>
-      <label
-        >Aadhaar Card:
-        <input
-          type="file"
-          name="aadhaarUpload"
-          accept=".pdf,.jpg,.png"
-          required
-      /></label>
-      <label
-        >Gold Valuation Report (if available):
-        <input type="file" name="valuationReport" accept=".pdf,.jpg,.png"
-      /></label>
-      <label
-        >Photograph of Gold Items:
-        <input type="file" name="goldImages" accept=".jpg,.png" multiple
-      /></label>
+      <label for="panUpload">PAN Card</label>
+      <input
+        type="file"
+        id="panUpload"
+        name="panUpload"
+        accept=".pdf,.jpg,.png"
+        required
+      />
+
+      <label for="aadhaarUpload">Aadhaar Card</label>
+      <input
+        type="file"
+        id="aadhaarUpload"
+        name="aadhaarUpload"
+        accept=".pdf,.jpg,.png"
+        required
+      />
+
+      <label for="valuationReport">Gold Valuation Report (if available)</label>
+      <input
+        type="file"
+        id="valuationReport"
+        name="valuationReport"
+        accept=".pdf,.jpg,.png"
+      />
+
+      <label for="goldImages">Photograph of Gold Items</label>
+      <input
+        type="file"
+        id="goldImages"
+        name="goldImages"
+        accept=".jpg,.png"
+        multiple
+      />
 
       <button type="submit">Submit Application</button>
     </form>
 
     <script>
+      function validateFiles(files) {
+        const maxFileSize = 2 * 1024 * 1024; // 2MB
+        for (const file of files) {
+          if (file.size > maxFileSize) {
+            alert(`File ${file.name} exceeds the 2MB size limit.`);
+            return false;
+          }
+          if (
+            !["image/jpeg", "image/png", "application/pdf"].includes(file.type)
+          ) {
+            alert(`File ${file.name} is not a valid type.`);
+            return false;
+          }
+        }
+        return true;
+      }
+
       function submitApplication(event) {
-        event.preventDefault(); // Prevent the default form submission
+        event.preventDefault();
+
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData.entries());
+
+        // Validate file uploads
+        const files = [
+          ...formData.getAll("panUpload"),
+          ...formData.getAll("aadhaarUpload"),
+          ...formData.getAll("valuationReport"),
+          ...formData.getAll("goldImages"),
+        ];
+        if (!validateFiles(files)) return;
+
+        const applications =
+          JSON.parse(localStorage.getItem("goldLoanApplications")) || [];
+        const isDuplicate = applications.some(
+          (app) =>
+            app.fullName === data.fullName && app.goldType === data.goldType
+        );
+        if (isDuplicate) {
+          alert("This application already exists.");
+          return;
+        }
+
+        applications.push(data);
+        localStorage.setItem(
+          "goldLoanApplications",
+          JSON.stringify(applications)
+        );
+
         alert("Application submitted successfully!");
+        event.target.reset();
       }
     </script>
   </body>
