@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Loan Sphere - Simplify Your Loan Management</title>
+    <title>PraRoz - Web Design & Development</title>
     <style>
       /* General Styles */
       body {
@@ -12,8 +12,8 @@
         background: #dfd0b8;
       }
       header {
-        background-color: #0f2027;
-        color: white;
+        background-color:#0f2027;
+        color:black;
         padding: 15px 0;
         margin-bottom: 10px;
       }
@@ -47,7 +47,7 @@
         justify-content: space-between;
         align-items: center;
         padding: 20px;
-        background: #504b38;
+        background: #504b38s;
       }
 
       .logo {
@@ -65,12 +65,18 @@
       .menu li a {
         text-decoration: none;
         color: white;
-        font-weight: bold;
-        font-size: 18px;
       }
 
-      .menu li a:hover {
-        color: orange;
+      .search-bar input {
+        padding: 5px;
+      }
+
+      .search-bar button {
+        padding: 5px;
+        background: orange;
+        border: none;
+        color: black;
+        cursor: pointer;
       }
 
       /* Hero Section */
@@ -78,7 +84,6 @@
         text-align: center;
         padding: 40px;
         background: url("background.jpg") no-repeat center center/cover;
-        color: white;
       }
 
       .hero-content h1 {
@@ -86,10 +91,10 @@
       }
 
       .hero-content .highlight {
-        color: orange;
+        color: black;
       }
 
-      .hero-content p {
+      .hero-content pre {
         font-size: 25px;
         font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
           "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
@@ -102,10 +107,10 @@
         color: #fff;
         cursor: pointer;
         font-size: larger;
-        border-radius: 5px;
       }
       .join-btn:hover {
         background-color: paleturquoise;
+
         color: #000;
       }
       .join-btn a {
@@ -113,20 +118,54 @@
         color: #000;
       }
 
-      /* Responsive Design */
-      @media (max-width: 768px) {
-        .hero-content h1 {
-          font-size: 40px;
-        }
+      /* Login Section */
+      .login {
+        display: flex;
+        justify-content: center;
+        padding: 30px;
+      }
 
-        .hero-content p {
-          font-size: 18px;
-        }
+      .login-box {
+        width: 500px;
+        background: #333;
+        padding: 20px;
+        border-radius: 15px;
+      }
 
-        .join-btn {
-          font-size: medium;
-          padding: 8px 16px;
-        }
+      .login-box h2 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .login-box input {
+        width: 95%;
+        padding: 10px;
+        margin: 10px 0;
+        border: none;
+        border-radius: 3px;
+      }
+
+      .login-btn {
+        width: 100%;
+        padding: 10px;
+        background: orange;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      .login-box p {
+        text-align: center;
+      }
+
+      .social-links {
+        text-align: center;
+      }
+
+      .social-links a {
+        text-decoration: none;
+        color: orange;
+        margin: 10px;
       }
     </style>
   </head>
@@ -134,27 +173,18 @@
     <header class="navbar">
       <div class="container">
         <div class="logo-heading">
-          <img src="logoo.jpg" alt="Loan Sphere Logo" />
-          <h1 style="font-weight: bold; color: #dfd0b8; font-style: oblique">
-            LOAN SPHERE
-          </h1>
+          <img src="logoo.jpg" alt="Logo" />
+          <h1 style="font-weight: bold;color:#dfd0b8;font-style: oblique;">LOAN SPHERE</h1>
         </div>
-
-        <nav>
-          <ul class="menu">
-            <li>
-              <h1>
-                <a href="./loginpage.html">USER</a>
-              </h1>
-            </li>
-            <li>
-              <h1>
-                <a href="./loginpage.html">ADMIN</a>
-              </h1>
-            </li>
-          </ul>
-        </nav>
-      </div>
+      
+      <nav>
+        <ul class="menu">
+        
+          <li><h1><a href="loginpage.html" style="font-weight: bold;">USER</a></h1></li>
+          <li><h1><a href="loginpage.html" style="font-weight: bold;">ADMIN</a></h1></li>
+          
+        </ul>
+      </nav>
     </header>
 
     <main>
@@ -162,16 +192,15 @@
         <div class="hero-content">
           <h1>
             GET YOUR
-            <span class="highlight">LOAN</span> NOW
+            <span class="highlight" style="color: orange;">LOAN</span> NOW
           </h1>
-          <p>
-            A digital platform that automates and streamlines the entire loan
-            lifecycle, from origination and disbursement to servicing and
-            closure, helping financial institutions efficiently manage their
-            loan portfolios.
-          </p>
+          <pre>
+A digital platform that automates and streamlines the entire loan lifecycle, 
+from origination and disbursement to servicing and closure, helping financial 
+     institutions efficiently manage their loan portfolios. </pre
+          >
           <button class="join-btn">
-            <a href="./registerpage.html">Join Us</a>
+            <a href="registerpage.html">Join Us</a>
           </button>
         </div>
       </section>
