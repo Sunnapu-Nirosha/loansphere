@@ -189,8 +189,8 @@
       // Handle User Login
       function loginUser(event) {
         event.preventDefault();
-        const email = document.getElementById("user-email").value;
-        const password = document.getElementById("user-password").value;
+        const email = document.getElementById("user-email").value.trim();
+        const password = document.getElementById("user-password").value.trim();
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
@@ -199,13 +199,7 @@
           return;
         }
 
-        const userData = JSON.parse(localStorage.getItem("userData"));
-
-        if (!userData) {
-          document.getElementById("user-error").innerText =
-            "No user data found. Please register first.";
-          return;
-        }
+        const userData = JSON.parse(localStorage.getItem("userData")) || {};
 
         if (userData.email === email && userData.password === password) {
           alert("Successfully logged in as User!");
@@ -219,8 +213,8 @@
       // Handle Admin Login
       function loginAdmin(event) {
         event.preventDefault();
-        const email = document.getElementById("admin-email").value;
-        const password = document.getElementById("admin-password").value;
+        const email = document.getElementById("admin-email").value.trim();
+        const password = document.getElementById("admin-password").value.trim();
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
@@ -229,13 +223,7 @@
           return;
         }
 
-        const adminData = JSON.parse(localStorage.getItem("adminData"));
-
-        if (!adminData) {
-          document.getElementById("admin-error").innerText =
-            "No admin data found. Please contact support.";
-          return;
-        }
+        const adminData = JSON.parse(localStorage.getItem("adminData")) || {};
 
         if (adminData.email === email && adminData.password === password) {
           alert("Successfully logged in as Admin!");
