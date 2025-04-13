@@ -199,9 +199,12 @@
           return;
         }
 
-        const userData = JSON.parse(localStorage.getItem("userData")) || {};
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const user = users.find(
+          (u) => u.email === email && u.password === password
+        );
 
-        if (userData.email === email && userData.password === password) {
+        if (user) {
           alert("Successfully logged in as User!");
           window.location.href = "./homepage.html"; // Redirect to homepage for users
         } else {
@@ -223,9 +226,12 @@
           return;
         }
 
-        const adminData = JSON.parse(localStorage.getItem("adminData")) || {};
+        const admins = JSON.parse(localStorage.getItem("admins")) || [];
+        const admin = admins.find(
+          (a) => a.email === email && a.password === password
+        );
 
-        if (adminData.email === email && adminData.password === password) {
+        if (admin) {
           alert("Successfully logged in as Admin!");
           window.location.href = "./admin.html"; // Redirect to admin page
         } else {
