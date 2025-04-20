@@ -38,6 +38,21 @@
         margin-bottom: 20px;
       }
 
+      .login-type {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .login-type label {
+        margin-right: 10px;
+        font-size: 16px;
+        color: white;
+      }
+
+      .login-type input {
+        margin-right: 5px;
+      }
+
       .input-box {
         position: relative;
         width: 100%;
@@ -76,25 +91,11 @@
         text-align: center;
       }
 
-      .btn a {
-        text-decoration: none;
-        color: white;
-        font-weight: bold;
-      }
-
-      .login-type {
-        margin: 20px 0;
+      .error-message {
+        color: red;
+        font-size: 14px;
+        margin-top: 10px;
         text-align: center;
-      }
-
-      .login-type label {
-        margin-right: 10px;
-        font-size: 16px;
-        color: white;
-      }
-
-      .login-type input {
-        margin-right: 5px;
       }
 
       #neru {
@@ -113,10 +114,22 @@
     <div class="outer-container">
       <h1>Login</h1>
 
+      <!-- Login Type Selection -->
+      <div class="login-type">
+        <label>
+          <input type="radio" name="login-type" value="user" checked />
+          User
+        </label>
+        <label>
+          <input type="radio" name="login-type" value="admin" />
+          Admin
+        </label>
+      </div>
+
       <!-- User Login Form -->
       <form id="user-login-form" onsubmit="loginUser(event)">
         <div class="input-box">
-          <input type="text" id="user-email" placeholder="Email" required />
+          <input type="email" id="user-email" placeholder="Email" required />
         </div>
         <div class="input-box">
           <input
@@ -126,6 +139,7 @@
             required
           />
         </div>
+        <div id="user-error" class="error-message"></div>
         <button class="btn" type="submit">Login as User</button>
       </form>
 
@@ -136,7 +150,7 @@
         onsubmit="loginAdmin(event)"
       >
         <div class="input-box">
-          <input type="text" id="admin-email" placeholder="Email" required />
+          <input type="email" id="admin-email" placeholder="Email" required />
         </div>
         <div class="input-box">
           <input
@@ -146,6 +160,7 @@
             required
           />
         </div>
+        <div id="admin-error" class="error-message"></div>
         <button class="btn" type="submit">Login as Admin</button>
       </form>
 
@@ -154,8 +169,13 @@
         <a href="registerpage.html">Register</a>
       </p>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
+      const supabase = window.supabase.createClient(
+        "https://mbbsadwqoaikknzuppgv.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1iYnNhZHdxb2Fpa2tuenVwcGd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxNDM4OTcsImV4cCI6MjA2MDcxOTg5N30.cZIf28120_jIbw_2GWQmnq7ag6nC5HgyDtKUwUn5hWQ"
+      );
+
       function showUserLogin() {
         document.getElementById("user-login-form").style.display = "block";
         document.getElementById("admin-login-form").style.display = "none";
@@ -166,31 +186,105 @@
         document.getElementById("admin-login-form").style.display = "block";
       }
 
-      // Automatically show the correct login form based on the query parameter
+      async function loginUser(event) {
+        event.preventDefault();
+        const email = document.getElementById("user-email").value.trim();
+        const password = document.getElementById("user-password").value.trim();
+        const errorDiv = document.getElementById("user-error");
+        errorDiv.innerText = "";
+
+        console.log("User login attempt:", email, password);
+
+        try {
+          // Query the Supabase table with the correct column names
+          const { data, error } = await supabase
+            .from("users") // Table name
+            .select("*")
+            .eq("mail", email) // Use "mail" instead of "email"
+            .eq("password", password) // Match the "password" column
+            .maybeSingle();
+
+          console.log("Supabase full response:", { data, error });
+
+          if (error) {
+            console.error("Supabase error:", error);
+            errorDiv.innerText = "An error occurred. Please try again.";
+          } else if (!data) {
+            errorDiv.innerText = "Invalid email or password!";
+          } else {
+            alert("Successfully logged in as User!");
+            window.location.href = "homepage.html"; // Redirect to homepage
+          }
+        } catch (err) {
+          console.error("Unexpected error:", err);
+          errorDiv.innerText =
+            "An unexpected error occurred. Please try again.";
+        }
+      }
+
+      async function loginAdmin(event) {
+        event.preventDefault();
+        const email = document.getElementById("admin-email").value.trim();
+        const password = document.getElementById("admin-password").value.trim();
+        const errorDiv = document.getElementById("admin-error");
+        errorDiv.innerText = "";
+
+        console.log("Admin login attempt:", email, password);
+
+        try {
+          // Query the Supabase table with the correct column names
+          const { data, error } = await supabase
+            .from("admin") // Table name
+            .select("*")
+            .eq("mail", email) // Use "mail" instead of "email"
+            .eq("password", password) // Match the "password" column
+            .maybeSingle();
+
+          console.log("Supabase response:", { data, error });
+
+          if (error) {
+            console.error("Supabase error:", error);
+            errorDiv.innerText = "An error occurred. Please try again.";
+          } else if (!data) {
+            errorDiv.innerText = "Invalid admin credentials!";
+          } else {
+            alert("Successfully logged in as Admin!");
+            window.location.href = "admin.html"; // Redirect to admin page
+          }
+        } catch (err) {
+          console.error("Unexpected error:", err);
+          errorDiv.innerText =
+            "An unexpected error occurred. Please try again.";
+        }
+      }
+
       window.onload = function () {
+        // Attach event listeners for radio buttons
+        const radioButtons = document.querySelectorAll(
+          'input[name="login-type"]'
+        );
+        radioButtons.forEach((radio) => {
+          radio.addEventListener("change", () => {
+            if (radio.value === "admin") {
+              showAdminLogin();
+            } else {
+              showUserLogin();
+            }
+          });
+        });
+
+        // Check URL query param on load
         const params = new URLSearchParams(window.location.search);
         const type = params.get("type");
 
         if (type === "admin") {
+          document.querySelector('input[value="admin"]').checked = true;
           showAdminLogin();
         } else {
+          document.querySelector('input[value="user"]').checked = true;
           showUserLogin();
         }
       };
-
-      // Handle User Login
-      function loginUser(event) {
-        event.preventDefault();
-        alert("Successfully logged in as User!");
-        window.location.href = "homepage.html"; // Redirect to homepage for users
-      }
-
-      // Handle Admin Login
-      function loginAdmin(event) {
-        event.preventDefault();
-        alert("Successfully logged in as Admin!");
-        window.location.href = "admin.html"; // Redirect to admin page
-      }
     </script>
   </body>
 </html>

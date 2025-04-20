@@ -194,8 +194,13 @@
         <a href="loginpage.html">Login</a>
       </p>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
+      const supabase = window.supabase.createClient(
+        "https://mbbsadwqoaikknzuppgv.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1iYnNhZHdxb2Fpa2tuenVwcGd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxNDM4OTcsImV4cCI6MjA2MDcxOTg5N30.cZIf28120_jIbw_2GWQmnq7ag6nC5HgyDtKUwUn5hWQ"
+      );
+
       function showUserForm() {
         document.getElementById("user-form").style.display = "block";
         document.getElementById("admin-form").style.display = "none";
@@ -205,18 +210,49 @@
         document.getElementById("user-form").style.display = "none";
         document.getElementById("admin-form").style.display = "block";
       }
-
-      function registerUser(event) {
+      async function registerUser(event) {
         event.preventDefault();
-        alert("Successfully registered as User!");
-        window.location.href = "loginpage.html?type=user"; // Redirect to login page with user type
+
+        const name = document.getElementById("user-name").value;
+        const mail = document.getElementById("user-email").value;
+        const password = document.getElementById("user-password").value;
+        const phone = document.getElementById("user-phone").value;
+
+        const { data, error } = await supabase
+          .from("users")
+          .insert([{ name, mail, password, phone }]);
+
+        if (error) {
+          alert("Error saving user data: " + error.message);
+        } else {
+          alert("Successfully registered as User!");
+          window.location.href = "loginpage.html?type=user";
+        }
       }
 
-      function registerAdmin(event) {
+      async function registerAdmin(event) {
         event.preventDefault();
-        alert("Successfully registered as Admin!");
-        window.location.href = "loginpage.html?type=admin"; // Redirect to login page with admin type
+
+        const name = document.getElementById("admin-name").value;
+        const mail = document.getElementById("admin-email").value;
+        const password = document.getElementById("admin-password").value;
+        const admin_id = document.getElementById("admin-id").value;
+
+        const { data, error } = await supabase
+          .from("admin")
+          .insert([{ name, mail, password, admin_id }]);
+
+        if (error) {
+          alert("Error saving admin data: " + error.message);
+        } else {
+          alert("Successfully registered as Admin!");
+          window.location.href = "loginpage.html?type=admin";
+        }
       }
+      window.showUserForm = showUserForm;
+      window.showAdminForm = showAdminForm;
+      window.registerUser = registerUser;
+      window.registerAdmin = registerAdmin;
     </script>
   </body>
 </html>
