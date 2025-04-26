@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Personal Loan Application</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
     <style>
       /* Your existing styles */
       * {
@@ -186,6 +188,16 @@
           <div id="aadhaar-error" class="error-message"></div>
         </div>
       </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="required" for="bankName">Bank Name</label>
+          <input type="text" id="bank" name="bank" required />
+        </div>
+        <div class="form-group">
+          <label class="required" for="account">Account Number</label>
+          <input type="number" id="account" name="account" required />
+        </div>
+      </div>
 
       <div class="form-row">
         <div class="form-group">
@@ -322,90 +334,58 @@
 
       <button type="submit">Submit Application</button>
     </form>
-
     <script>
-      function submitApplication(event) {
+      const supabase = window.supabase.createClient(
+        "https://mbbsadwqoaikknzuppgv.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1iYnNhZHdxb2Fpa2tuenVwcGd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxNDM4OTcsImV4cCI6MjA2MDcxOTg5N30.cZIf28120_jIbw_2GWQmnq7ag6nC5HgyDtKUwUn5hWQ" // Replace with your actual anon key
+      );
+
+      async function submitApplication(event) {
         event.preventDefault();
 
-        // Get the form data
         const form = event.target;
-        const data = {
-          loanType: "Personal Loan",
-          fullName: form.fullName.value,
-          dob: form.dob.value,
-          pan: form.pan.value,
-          aadhaar: form.aadhaar.value,
-          phone: form.phone.value,
-          email: form.email.value,
-          address: form.address.value,
-          employmentType: form.employmentType.value,
-          employer: form.employer.value,
-          monthlyIncome: form.monthlyIncome.value,
-          loanAmount: form.loanAmount.value,
-          loanTenure: form.loanTenure.value,
-          loanPurpose: form.loanPurpose.value,
-          applicationDate: new Date().toISOString(),
-        };
+        const name = form.fullName.value; // Corrected field name
+        const mail = form.email.value;
+        const phone_no = form.phone.value;
+        const dob = form.dob.value;
+        const age = new Date().getFullYear() - new Date(dob).getFullYear();
+        const loan_type = "Personal Loan"; // Updated loan type
+        const loan_amount_raw = form.loanAmount.value.replace(/,/g, "");
+        const loan_amount = isNaN(parseFloat(loan_amount_raw))
+          ? 0
+          : parseFloat(loan_amount_raw);
+
+        const account_number = form.account.value;
+        const bank_name = form.bank.value;
 
         try {
-          // Get existing applications from localStorage
-          let applications =
-            JSON.parse(localStorage.getItem("loanApplications")) || [];
+          // Insert into Supabase table
+          const { data, error } = await supabase
+            .from("loan_applications") // Replace with your actual table name
+            .insert([
+              {
+                name,
+                mail,
+                phone_no,
+                age,
+                loan_type,
+                loan_amount,
+                account_number,
+                bank_name,
+              },
+            ]);
 
-          // Check for duplicate applications
-          const isDuplicate = applications.some(
-            (app) => app.pan === data.pan && app.aadhaar === data.aadhaar
-          );
-          if (isDuplicate) {
-            alert("This application already exists.");
-            return;
+          if (error) {
+            throw error;
           }
 
-          // Add new application
-          applications.push(data);
-
-          // Save back to localStorage
-          localStorage.setItem(
-            "loanApplications",
-            JSON.stringify(applications)
-          );
-
-          // Show success message and reset form
           alert("Application submitted successfully!");
           form.reset();
+          window.location.href = "homepage.html";
         } catch (error) {
-          alert("Error saving application: " + error.message);
+          alert("Error submitting to Supabase: " + error.message);
         }
       }
-
-      // Add form validation for PAN and Aadhaar
-      document.getElementById("pan").addEventListener("input", function (e) {
-        const errorElement = document.getElementById("pan-error");
-        this.value = this.value.toUpperCase();
-        if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(this.value)) {
-          errorElement.innerText = "Please enter a valid PAN number.";
-          this.setCustomValidity("Please enter a valid PAN number");
-        } else {
-          errorElement.innerText = "";
-          this.setCustomValidity("");
-        }
-      });
-
-      document
-        .getElementById("aadhaar")
-        .addEventListener("input", function (e) {
-          const errorElement = document.getElementById("aadhaar-error");
-          if (!/^\d{12}$/.test(this.value)) {
-            errorElement.innerText =
-              "Please enter a valid 12-digit Aadhaar number.";
-            this.setCustomValidity(
-              "Please enter a valid 12-digit Aadhaar number"
-            );
-          } else {
-            errorElement.innerText = "";
-            this.setCustomValidity("");
-          }
-        });
     </script>
   </body>
 </html>

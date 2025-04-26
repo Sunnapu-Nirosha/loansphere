@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Car Loan Application</title>
     <link rel="stylesheet" href="./carloan.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   </head>
   <body>
     <h1>Car Loan Application Form</h1>
@@ -18,12 +19,15 @@
 
       <label for="pan">PAN Number</label>
       <input type="text" id="pan" name="pan" required />
+      <label for="fullName">Account Number</label>
+      <input type="text" id="account" name="account" required />
+      <label for="fullName">Bank Name</label>
+      <input type="text" id="bank" name="bank" required />
 
+      <label for="pan">Phone Number</label>
+      <input type="text" id="phone" name="phone" required />
       <label for="aadhaar">Aadhaar Number</label>
       <input type="text" id="aadhaar" name="aadhaar" required />
-
-      <label for="phone">Phone Number</label>
-      <input type="tel" id="phone" name="phone" required />
 
       <label for="email">Email Address</label>
       <input type="email" id="email" name="email" required />
@@ -116,57 +120,54 @@
     </form>
 
     <script>
-      function validateFiles(files) {
-        const maxFileSize = 2 * 1024 * 1024; // 2MB
-        for (const file of files) {
-          if (file.size > maxFileSize) {
-            alert(`File ${file.name} exceeds the 2MB size limit.`);
-            return false;
-          }
-          if (
-            !["image/jpeg", "image/png", "application/pdf"].includes(file.type)
-          ) {
-            alert(`File ${file.name} is not a valid type.`);
-            return false;
-          }
-        }
-        return true;
-      }
+      const supabase = window.supabase.createClient(
+        "https://mbbsadwqoaikknzuppgv.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1iYnNhZHdxb2Fpa2tuenVwcGd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxNDM4OTcsImV4cCI6MjA2MDcxOTg5N30.cZIf28120_jIbw_2GWQmnq7ag6nC5HgyDtKUwUn5hWQ" // Replace with your actual anon key
+      );
 
-      function submitApplication(event) {
+      async function submitApplication(event) {
         event.preventDefault();
 
-        const formData = new FormData(event.target);
-        const data = Object.fromEntries(formData.entries());
+        const form = event.target;
+        const name = form.fullName.value; // Corrected field name
+        const mail = form.email.value;
+        const phone_no = form.phone.value;
+        const dob = form.dob.value;
+        const age = new Date().getFullYear() - new Date(dob).getFullYear();
+        const loan_type = "Car Loan"; // Updated loan type
+        const loan_amount_raw = form.loanAmount.value.replace(/,/g, "");
+        const loan_amount = isNaN(parseFloat(loan_amount_raw))
+          ? 0
+          : parseFloat(loan_amount_raw);
+        const account_number = form.account.value;
+        const bank_name = form.bank.value;
+        try {
+          // Insert into Supabase table
+          const { data, error } = await supabase
+            .from("loan_applications") // Replace with your actual table name
+            .insert([
+              {
+                name,
+                mail,
+                phone_no,
+                age,
+                loan_type,
+                loan_amount,
+                bank_name,
+                account_number,
+              },
+            ]);
 
-        // Validate file uploads
-        const files = [
-          ...formData.getAll("panUpload"),
-          ...formData.getAll("aadhaarUpload"),
-          ...formData.getAll("incomeProof"),
-          ...formData.getAll("invoiceUpload"),
-        ];
-        if (!validateFiles(files)) return;
+          if (error) {
+            throw error;
+          }
 
-        const applications =
-          JSON.parse(localStorage.getItem("carLoanApplications")) || [];
-        const isDuplicate = applications.some(
-          (app) =>
-            app.fullName === data.fullName && app.carMake === data.carMake
-        );
-        if (isDuplicate) {
-          alert("This application already exists.");
-          return;
+          alert("Application submitted successfully!");
+          form.reset();
+          window.location.href = "homepage.html";
+        } catch (error) {
+          alert("Error submitting to Supabase: " + error.message);
         }
-
-        applications.push(data);
-        localStorage.setItem(
-          "carLoanApplications",
-          JSON.stringify(applications)
-        );
-
-        alert("Application submitted successfully!");
-        event.target.reset();
       }
     </script>
   </body>

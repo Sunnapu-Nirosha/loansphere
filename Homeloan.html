@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home Loan Application</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <style>
       /* Reset and Base Styles */
       * {
@@ -99,84 +100,189 @@
       button[type="submit"]:hover {
         background-color: #2980b9;
       }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .loan-form {
+          padding: 20px;
+        }
+
+        h1 {
+          font-size: 1.8rem;
+        }
+
+        h2 {
+          font-size: 1.3rem;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="tel"],
+        input[type="email"],
+        input[type="number"],
+        textarea {
+          padding: 10px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 10px;
+        }
+
+        .loan-form {
+          padding: 15px;
+        }
+
+        h1 {
+          font-size: 1.6rem;
+          margin-bottom: 20px;
+        }
+
+        h2 {
+          font-size: 1.2rem;
+          margin: 15px 0 10px;
+        }
+
+        button[type="submit"] {
+          padding: 12px;
+        }
+      }
     </style>
   </head>
   <body>
     <h1>Home Loan Application Form</h1>
     <form class="loan-form" onsubmit="submitApplication(event)">
       <h2>Personal Information</h2>
-      <label for="fullname">Full Name</label>
-      <input type="text" id="fullname" name="fullname" required />
+      <input type="text" name="fullname" placeholder="Full Name" required />
+      <input type="date" name="dob" placeholder="Date of Birth" required />
+      <input type="text" name="pan" placeholder="PAN Number" required />
+      <input type="text" name="account" placeholder="Account Number" required />
+      <input type="text" name="bank" placeholder="Bank Name" required />
+      <input type="text" name="aadhaar" placeholder="Aadhaar Number" required />
+      <input type="tel" name="phone" placeholder="Phone Number" required />
+      <input type="email" name="email" placeholder="Email Address" required />
 
-      <label for="dob">Date of Birth</label>
-      <input type="date" id="dob" name="dob" required />
-
-      <label for="pan">PAN Number</label>
-      <input type="text" id="pan" name="pan" required />
-
-      <label for="aadhaar">Aadhaar Number</label>
-      <input type="text" id="aadhaar" name="aadhaar" required />
-
-      <label for="phone">Phone Number</label>
-      <input type="tel" id="phone" name="phone" required />
-
-      <label for="email">Email Address</label>
-      <input type="email" id="email" name="email" required />
-
-      <h2>Loan Details</h2>
-      <label for="loanAmount">Loan Amount Required</label>
+      <h2>Employment Details</h2>
+      <input
+        type="text"
+        name="employmentType"
+        placeholder="Employment Type (Salaried/Self-employed)"
+        required
+      />
+      <input
+        type="text"
+        name="organization"
+        placeholder="Organization Name"
+        required
+      />
       <input
         type="number"
-        id="loanAmount"
-        name="loanAmount"
-        min="500000"
+        name="income"
+        placeholder="Monthly Income"
         required
       />
 
-      <label for="loanTenure">Loan Tenure (in years)</label>
-      <input type="number" id="loanTenure" name="loanTenure" required />
+      <h2>Loan Details</h2>
+      <input
+        type="number"
+        name="loanAmount"
+        placeholder="Loan Amount Required"
+        required
+      />
+      <input
+        type="number"
+        name="loanTenure"
+        placeholder="Loan Tenure (in years)"
+        required
+      />
+      <input
+        type="text"
+        name="propertyLocation"
+        placeholder="Property Location"
+        required
+      />
+      <textarea
+        name="propertyDetails"
+        placeholder="Property Description"
+        rows="4"
+        required
+      ></textarea>
+
+      <h2>Documents Upload</h2>
+      <label
+        >PAN Card:
+        <input type="file" name="panUpload" accept=".pdf,.jpg,.png" required
+      /></label>
+      <label
+        >Aadhaar Card:
+        <input
+          type="file"
+          name="aadhaarUpload"
+          accept=".pdf,.jpg,.png"
+          required
+      /></label>
+      <label
+        >Salary Slips / Income Proof:
+        <input type="file" name="incomeProof" accept=".pdf,.jpg,.png" required
+      /></label>
+      <label
+        >Property Documents:
+        <input type="file" name="propertyDocs" accept=".pdf,.jpg,.png" required
+      /></label>
 
       <button type="submit">Submit Application</button>
     </form>
-
     <script>
-      function submitApplication(event) {
+      const supabase = window.supabase.createClient(
+        "https://mbbsadwqoaikknzuppgv.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1iYnNhZHdxb2Fpa2tuenVwcGd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxNDM4OTcsImV4cCI6MjA2MDcxOTg5N30.cZIf28120_jIbw_2GWQmnq7ag6nC5HgyDtKUwUn5hWQ" // Replace with your actual anon key
+      );
+
+      async function submitApplication(event) {
         event.preventDefault();
 
         const form = event.target;
-        const data = {
-          fullname: form.fullname.value,
-          loanAmount: parseFloat(form.loanAmount.value.replace(/,/g, "")),
-          loanTenure: parseInt(form.loanTenure.value),
-        };
+        const name = form.fullname.value;
+        const mail = form.email.value;
+        const phone_no = form.phone.value;
+        const dob = form.dob.value;
+        const age = new Date().getFullYear() - new Date(dob).getFullYear();
+        const loan_type = "Home Loan";
+        const loan_amount_raw = form.loanAmount.value.replace(/,/g, "");
+        const loan_amount = isNaN(parseFloat(loan_amount_raw))
+          ? 0
+          : parseFloat(loan_amount_raw);
+
+        const account_number = form.account.value;
+        const bank_name = form.bank.value;
 
         try {
-          if (data.loanAmount < 500000) {
-            throw new Error("Loan amount must be at least ₹5,00,000");
-          }
+          // Insert into Supabase table
+          const { data, error } = await supabase
+            .from("loan_applications")
+            .insert([
+              {
+                name,
+                mail,
+                phone_no,
+                age,
+                loan_type,
+                loan_amount,
+                account_number,
+                bank_name,
+              },
+            ]);
 
-          let applications =
-            JSON.parse(localStorage.getItem("homeLoanApplications")) || [];
-          const isDuplicate = applications.some(
-            (app) =>
-              app.fullname === data.fullname &&
-              app.loanAmount === data.loanAmount
-          );
-          if (isDuplicate) {
-            alert("This application already exists.");
-            return;
+          if (error) {
+            throw error;
           }
-
-          applications.push(data);
-          localStorage.setItem(
-            "homeLoanApplications",
-            JSON.stringify(applications)
-          );
 
           alert("Application submitted successfully!");
           form.reset();
+          window.location.href = "homepage.html";
         } catch (error) {
-          alert(`Error: ${error.message}`);
+          alert("Error submitting to Supabase: " + error.message);
         }
       }
     </script>

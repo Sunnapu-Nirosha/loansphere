@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mortgage Loan Application</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
     <style>
       /* Reset and Base Styles */
       * {
@@ -227,6 +229,20 @@
         required
       />
       <input
+        type="text"
+        name="account"
+        placeholder="Account Number"
+        aria-label="Account Number"
+        required
+      />
+      <input
+        type="text"
+        name="bank"
+        placeholder="Bank Name"
+        aria-label="Bank Name"
+        required
+      />
+      <input
         type="tel"
         name="phone"
         placeholder="Phone Number"
@@ -352,60 +368,57 @@
 
       <button type="submit">Submit Application</button>
     </form>
-
     <script>
-      function validateFiles(files) {
-        const maxFileSize = 2 * 1024 * 1024; // 2MB
-        for (const file of files) {
-          if (file.size > maxFileSize) {
-            alert(`File ${file.name} exceeds the 2MB size limit.`);
-            return false;
-          }
-          if (
-            !["image/jpeg", "image/png", "application/pdf"].includes(file.type)
-          ) {
-            alert(`File ${file.name} is not a valid type.`);
-            return false;
-          }
-        }
-        return true;
-      }
+      const supabase = window.supabase.createClient(
+        "https://mbbsadwqoaikknzuppgv.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1iYnNhZHdxb2Fpa2tuenVwcGd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxNDM4OTcsImV4cCI6MjA2MDcxOTg5N30.cZIf28120_jIbw_2GWQmnq7ag6nC5HgyDtKUwUn5hWQ" // Replace with your actual anon key
+      );
 
-      function submitApplication(event) {
+      async function submitApplication(event) {
         event.preventDefault();
 
-        const formData = new FormData(event.target);
-        const data = Object.fromEntries(formData.entries());
+        const form = event.target;
+        const name = form.fullName.value; // Corrected field name
+        const mail = form.email.value;
+        const phone_no = form.phone.value;
+        const dob = form.dob.value;
+        const age = new Date().getFullYear() - new Date(dob).getFullYear();
+        const loan_type = "Mortgage Loan"; // Updated loan type
+        const loan_amount_raw = form.loanAmount.value.replace(/,/g, "");
+        const loan_amount = isNaN(parseFloat(loan_amount_raw))
+          ? 0
+          : parseFloat(loan_amount_raw);
 
-        // Validate file uploads
-        const files = [
-          ...formData.getAll("panUpload"),
-          ...formData.getAll("aadhaarUpload"),
-          ...formData.getAll("incomeProof"),
-          ...formData.getAll("propertyDocs"),
-        ];
-        if (!validateFiles(files)) return;
+        const account_number = form.account.value;
+        const bank_name = form.bank.value;
 
-        const applications =
-          JSON.parse(localStorage.getItem("mortgageApplications")) || [];
-        const isDuplicate = applications.some(
-          (app) =>
-            app.fullName === data.fullName &&
-            app.propertyAddress === data.propertyAddress
-        );
-        if (isDuplicate) {
-          alert("This application already exists.");
-          return;
+        try {
+          // Insert into Supabase table
+          const { data, error } = await supabase
+            .from("loan_applications") // Replace with your actual table name
+            .insert([
+              {
+                name,
+                mail,
+                phone_no,
+                age,
+                loan_type,
+                loan_amount,
+                account_number,
+                bank_name,
+              },
+            ]);
+
+          if (error) {
+            throw error;
+          }
+
+          alert("Application submitted successfully!");
+          form.reset();
+          window.location.href = "homepage.html";
+        } catch (error) {
+          alert("Error submitting to Supabase: " + error.message);
         }
-
-        applications.push(data);
-        localStorage.setItem(
-          "mortgageApplications",
-          JSON.stringify(applications)
-        );
-
-        alert("Application submitted successfully!");
-        event.target.reset();
       }
     </script>
   </body>

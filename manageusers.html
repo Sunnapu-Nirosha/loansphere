@@ -3,138 +3,125 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Manage Users | Loan Applications</title>
+    <title>Manage Users | Loan Sphere</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
     <style>
       body {
         font-family: Arial, sans-serif;
+        background: #0f2027;
+        color: #fff;
         margin: 0;
-        padding: 20px;
-        background-color: #f5f7fa;
+        padding: 0;
       }
 
-      h1 {
+      header,
+      footer {
         text-align: center;
-        color: #2c3e50;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 1rem;
       }
 
-      .applications-table {
+      .container {
+        padding: 2rem;
+        max-width: 1000px;
+        margin: auto;
+      }
+
+      h2 {
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+
+      table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 20px;
+        margin-top: 1rem;
       }
 
-      .applications-table th,
-      .applications-table td {
-        border: 1px solid #ddd;
-        padding: 10px;
-        text-align: left;
-      }
-
-      .applications-table th {
-        background-color: #3498db;
-        color: white;
-      }
-
-      .applications-table tr:nth-child(even) {
-        background-color: #f9f9f9;
-      }
-
-      .applications-table tr:hover {
-        background-color: #f1f1f1;
-      }
-
-      .empty-message {
+      th,
+      td {
+        padding: 12px;
+        border: 1px solid #ccc;
         text-align: center;
-        color: #888;
-        font-size: 16px;
-        margin-top: 20px;
+      }
+
+      th {
+        background-color: #1e90ff;
+      }
+
+      tr:nth-child(even) {
+        background-color: rgba(255, 255, 255, 0.05);
       }
     </style>
   </head>
   <body>
-    <h1>Manage Users - Loan Applications</h1>
-    <table class="applications-table" aria-label="Loan Applications Table">
-      <thead>
-        <tr>
-          <th scope="col">Name</th>
-          <th scope="col">Type of Loan</th>
-          <th scope="col">Loan Amount</th>
-          <th scope="col">Date</th>
-        </tr>
-      </thead>
-      <tbody id="applicationsTableBody">
-        <!-- Loan applications will be dynamically inserted here -->
-      </tbody>
-    </table>
+    <header>
+      <h1>Loan Applications - Admin View</h1>
+    </header>
 
+    <div class="container">
+      <h2>All Submitted Applications</h2>
+      <table id="applicationsTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Age</th>
+            <th>Loan Type</th>
+            <th>Amount</th>
+            <th>Account No.</th>
+            <th>Bank</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Data will be inserted here -->
+        </tbody>
+      </table>
+    </div>
+
+    <footer>&copy; 2025 Loan Sphere Admin Panel</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
-      function loadApplications() {
-        // Retrieve applications from localStorage
-        const applications =
-          JSON.parse(localStorage.getItem("loanApplications")) || [];
+      const SUPABASE_URL = "https://mbbsadwqoaikknzuppgv.supabase.co";
+      const SUPABASE_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1iYnNhZHdxb2Fpa2tuenVwcGd2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxNDM4OTcsImV4cCI6MjA2MDcxOTg5N30.cZIf28120_jIbw_2GWQmnq7ag6nC5HgyDtKUwUn5hWQ";
+      const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      async function fetchApplications() {
+        const { data, error } = await client
+          .from("loan_applications")
+          .select("*");
 
-        // Get the table body element
-        const tableBody = document.getElementById("applicationsTableBody");
-
-        // Clear existing rows
-        tableBody.innerHTML = "";
-
-        // Validate data structure
-        if (
-          !Array.isArray(applications) ||
-          !applications.every(
-            (app) => app.name && app.type && app.amount && app.date
-          )
-        ) {
-          console.error("Invalid data structure in localStorage.");
-          tableBody.innerHTML = `
-            <tr>
-              <td colspan="4" style="text-align: center; color: #888;">
-                Invalid data found. Please check the data source.
-              </td>
-            </tr>
-          `;
+        if (error) {
+          console.error("Error fetching data:", error.message);
           return;
         }
 
-        // Handle empty state
-        if (applications.length === 0) {
-          tableBody.innerHTML = `
-            <tr>
-              <td colspan="4" style="text-align: center; color: #888;">
-                No loan applications found.
-              </td>
-            </tr>
-          `;
-          return;
-        }
+        const tbody = document.querySelector("#applicationsTable tbody");
+        tbody.innerHTML = "";
 
-        // Populate table with applications
-        applications.forEach((application) => {
+        data.forEach((app) => {
           const row = document.createElement("tr");
-
-          const formattedDate = new Date(application.date).toLocaleDateString(
-            "en-IN",
-            {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-            }
-          );
-
           row.innerHTML = `
-            <td>${application.name}</td>
-            <td>${application.type}</td>
-            <td>₹${application.amount}</td>
-            <td>${formattedDate}</td>
-          `;
-
-          tableBody.appendChild(row);
+      <td>${app.id}</td>
+      <td>${app.name}</td>
+      <td>${app.mail}</td>
+      <td>${app.Phone_no}</td>
+      <td>${app.age}</td>
+      <td>${app.loan_type}</td>
+      <td>${app.loan_amount}</td>
+      <td>${app.account_number}</td>
+      <td>${app.bank_name}</td>
+    `;
+          tbody.appendChild(row);
         });
       }
-
-      // Load applications on page load
-      window.onload = loadApplications;
+      document.addEventListener("DOMContentLoaded", fetchApplications);
     </script>
   </body>
 </html>
